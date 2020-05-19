@@ -1,0 +1,44 @@
+ IEnumerable<DataRow> GetRows()
+        {
+            dynamic row = new ExpandoObject();
+            row.Name = "joe";
+
+ 
+
+            var dataTable = new DataTableBuilder("temp", "Name").AddRow(row).Build();
+
+ 
+
+            var dataRow = dataTable.Rows[0];
+
+ 
+
+            for (int i = 0; i < 10; i++)
+            {
+                yield return dataRow;
+                dataRow["Name"] = "joe";
+
+ 
+
+                if (i == 9)
+                {
+                    dataRow["Name"] = "Rasagnya";
+                }
+            }
+        }
+
+ 
+
+        [Test]
+        public void Example()
+        {
+            var rows = GetRows().ToArray();
+
+ 
+
+            foreach (var r in rows)
+            {
+                Assert.AreEqual("Rasagnya", r["Name"] as string);
+                Assert.AreEqual(r, rows[0]);
+            }
+        }
